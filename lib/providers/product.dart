@@ -1,17 +1,26 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 
 class Product with ChangeNotifier {
-  String id;
-  String title;
-  String description;
-  String rating;
+  final String id;
+  final String title;
+  final String description;
+  final String imageUrl;
+  final String rating;
+  final double price;
   bool isAvailable;
-  double price;
+  final String createdBy;
+  final DateTime? createdAt;
 
   Product({
-    this.id,
-    this.
-  })
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.imageUrl,
+    required this.rating,
+    required this.price,
+    required this.isAvailable,
+    required this.createdBy,
+     this.createdAt
+  });
 }
