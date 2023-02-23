@@ -1,15 +1,59 @@
+import 'package:campus_yard/http_exception.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import './auth_login_screen.dart';
+import '../providers/auth.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  // const SignUpScreen({super.key});
+  static const routeName = '/auth_sign_up';
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  Map<String, String> _authData = {
+    'email': '',
+    'password': '',
+  };
+
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  void _showErrorDialog(String message) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: const Text('An error occured'),
+              content: Text(message),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Okay')),
+              ],
+            ));
+  }
+
+  Future<void> _submit() async {
+    // if (!_formKey.currentState!.validate()) {
+    //   return;
+    // }
+    // _formKey.currentState?.save();
+    try {
+      await Provider.of<Auth>(context, listen: false)
+          .signUp(_emailController.text, _passwordController.text);
+    } on HttpException catch (error) {
+      var errorMessage = 'Authentication failed';
+      _showErrorDialog(errorMessage);
+    }
+  }
+
   @override
   Widget build(BuildContext context) => initWidget();
 
@@ -22,7 +66,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               height: 250,
               decoration: BoxDecoration(
                 borderRadius:
-                    BorderRadius.only(bottomLeft: Radius.circular(90)),
+                    const BorderRadius.only(bottomLeft: Radius.circular(90)),
                 color: new Color(0xffF5591F),
                 gradient: LinearGradient(
                   colors: [(new Color(0xffF5591F)), new Color(0xffF2861E)],
@@ -97,9 +141,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         blurRadius: 50,
                         color: Color(0xffEEEEEE))
                   ]),
-              child: const TextField(
+              child: TextFormField(
+                controller: _emailController,
                 cursorColor: Color(0xffF5591F),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   icon: Icon(
                     Icons.email,
                     color: Color(0xffF5591F),
@@ -108,6 +153,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                 ),
+                validator: (value) {
+                  if (value!.isEmpty || !value.contains('@')) {
+                    return 'Invalid email';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _authData['email'] = value!;
+                },
               ),
             ),
             Container(
@@ -154,9 +208,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: Color(0xffEEEEEE)),
                 ],
               ),
-              child: const TextField(
+              child: TextFormField(
                 cursorColor: Color(0xffF5591F),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   focusColor: Color(0xffF5591F),
                   icon: Icon(
                     Icons.vpn_key,
@@ -166,10 +220,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                 ),
+                obscureText: true,
+                controller: _passwordController,
+                validator: (value) {
+                  if (value!.isEmpty || value.length < 5) {
+                    return 'Password is too short!';
+                  }
+                },
+                onSaved: (value) {
+                  _authData['password'] = value!;
+                },
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                _submit();
+              },
               child: Container(
                 alignment: Alignment.center,
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 70),

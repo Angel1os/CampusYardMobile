@@ -14,18 +14,18 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    startTime();
+    // startTime();
   }
 
-  startTime() async {
-    var duration = Duration(seconds: 4);
-    return new Timer(duration, route);
-  }
+  // startTime() async {
+  //   var duration = Duration(seconds: 4);
+  //   return new Timer(duration, route);
+  // }
 
-  route() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
-  }
+  // route() {
+    // Navigator.pushReplacement(
+        // context, MaterialPageRoute(builder: (context) => LoginScreen()));
+  // }
 
   @override
   Widget build(BuildContext context) {

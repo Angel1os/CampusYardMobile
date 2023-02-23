@@ -8,8 +8,8 @@ import './products_overview_screen.dart';
 import '../providers/auth.dart';
 
 class LoginScreen extends StatefulWidget {
-  // const LoginScreen({super.key});
-  static const routeName = '/auth';
+  const LoginScreen({super.key});
+  static const routeName = '/auth_login';
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -41,14 +41,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-    _formKey.currentState?.save();
+    // if (!_formKey.currentState!.validate()) {
+    //   return;
+    // }
+    // _formKey.currentState?.save();
 
     try {
+      print("submit");
       await Provider.of<Auth>(context, listen: false)
           .login(_authData['email'], _authData['password']);
+      print("submit");
       // Navigator.of(context).pushReplacementNamed('/products-overview');
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
@@ -192,12 +194,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const ProductOverViewScreen(),
-                  //     ));
-                  _submit;
+                  Navigator.push(
+                      context,
+                  MaterialPageRoute(
+                    builder: (context) =>  ProductOverViewScreen(),
+                  ));
+                  // _submit();
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -236,11 +238,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(color: Color(0xffF5591F)),
                       ),
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SignUpScreen(),
-                            ));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) =>  SignUpScreen(),
+                        //     ));
+                        Navigator.of(context)
+                            .pushReplacementNamed(SignUpScreen.routeName);
                       },
                     )
                   ],
